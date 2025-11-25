@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4>{{ title }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Type of Care Needed</label>
+                        <select name="required_caregiving_type" class="form-select">
+                            <option value="Babysitter" {% if job and job.required_caregiving_type == 'Babysitter' %}selected{% endif %}>Babysitter</option>
+                            <option value="Caregiver for elderly" {% if job and job.required_caregiving_type == 'Caregiver for elderly' %}selected{% endif %}>Caregiver for elderly</option>
+                            <option value="Playmate for children" {% if job and job.required_caregiving_type == 'Playmate for children' %}selected{% endif %}>Playmate for children</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Requirements & Details</label>
+                        <textarea name="other_requirements" class="form-control" rows="4" placeholder="e.g. Need someone for weekends...">{{ job.other_requirements if job else '' }}</textarea>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success">Save Job</button>
+                        <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

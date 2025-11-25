@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Find a Caregiver</h2>
+    </div>
+
+    <div class="card p-3 mb-4 bg-light shadow-sm">
+        <form action="{{ url_for('list_caregivers') }}" method="GET" class="row g-2 align-items-end">
+            <div class="col-md-5">
+                <label class="form-label fw-bold small">Filter by City</label>
+                <select name="city" class="form-select">
+                    <option value="">All Cities</option>
+                    {% for c in cities %}
+                        <option value="{{ c[0] }}" {% if request.args.get('city') == c[0] %}selected{% endif %}>
+                            {{ c[0] }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-5">
+                <label class="form-label fw-bold small">Filter by Type</label>
+                <select name="caregiving_type" class="form-select">
+                    <option value="">All Types</option>
+                    <option value="Babysitter" {% if request.args.get('caregiving_type') == 'Babysitter' %}selected{% endif %}>Babysitter</option>
+                    <option value="Caregiver for elderly" {% if request.args.get('caregiving_type') == 'Caregiver for elderly' %}selected{% endif %}>Caregiver for elderly</option>
+                    <option value="Playmate for children" {% if request.args.get('caregiving_type') == 'Playmate for children' %}selected{% endif %}>Playmate for children</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                    {% if request.args.get('city') or request.args.get('caregiving_type') %}
+                        <a href="{{ url_for('list_caregivers') }}" class="btn btn-outline-secondary btn-sm">Clear</a>
+                    {% endif %}
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="row">
+        {% for cg in caregivers %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm text-center">
+                <div class="card-body">
+                    <img src="{{ cg.photo or 'https://ui-avatars.com/api/?name=' ~ cg.user.given_name ~ '+' ~ cg.user.surname ~ '&background=random' }}"
+                        class="rounded-circle mb-3"
+                        width="80"
+                        height="80"
+                        style="object-fit: cover;">
+
+                    <h5 class="card-title">{{ cg.user.given_name }} {{ cg.user.surname }}</h5>
+                    <span class="badge bg-info text-dark mb-2">{{ cg.caregiving_type }}</span>
+                    <p class="text-muted mb-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
+                            <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"></path>
+                        </svg>
+                        {{ cg.user.city }}
+                    </p>
+                    <h4 class="text-primary fw-bold">${{ cg.hourly_rate }}/hr</h4>
+
+                    <p class="card-text small text-muted mt-3">
+                        {{ cg.user.profile_description or "No bio provided." }}
+                    </p>
+                </div>
+                <div class="card-footer bg-white border-top-0 pb-3">
+                    {% if current_user.is_authenticated and current_user.member_profile %}
+                        <a href="{{ url_for('book_appointment', caregiver_id=cg.caregiver_user_id) }}" class="btn btn-outline-success w-100">Book Appointment</a>
+                    {% elif current_user.is_authenticated %}
+                         <button disabled class="btn btn-secondary w-100">Caregivers cannot book</button>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="btn btn-outline-primary w-100">Login to Book</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% else %}
+            <div class="col-12 text-center py-5">
+                <div class="alert alert-warning">
+                    No caregivers found matching your criteria.
+                    <a href="{{ url_for('list_caregivers') }}">View all</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

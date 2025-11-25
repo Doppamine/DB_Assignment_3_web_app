@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">My Profile</h4>
+                    <a href="{{ url_for('edit_profile') }}" class="btn btn-light btn-sm">Edit Profile</a>
+                </div>
+                <div class="card-body">
+
+                    <div class="text-center mb-4">
+                        {% if current_user.caregiver_profile %}
+                            <img src="{{ current_user.caregiver_profile.photo or 'https://ui-avatars.com/api/?name=' ~ current_user.given_name ~ '+' ~ current_user.surname }}"
+                                 class="rounded-circle mb-3" width="100" height="100" style="object-fit: cover;">
+                        {% else %}
+                             <div class="bg-light rounded-circle d-inline-flex justify-content-center align-items-center" style="width: 80px; height: 80px;">
+                                <span class="h2 text-muted mb-0">{{ current_user.given_name[0] }}</span>
+                             </div>
+                        {% endif %}
+                        <h3>{{ current_user.given_name }} {{ current_user.surname }}</h3>
+                        <p class="text-muted">{{ current_user.email }}</p>
+                    </div>
+
+                    <dl class="row">
+                        <dt class="col-sm-3">Phone</dt>
+                        <dd class="col-sm-9">{{ current_user.phone_number }}</dd>
+
+                        <dt class="col-sm-3">City</dt>
+                        <dd class="col-sm-9">{{ current_user.city }}</dd>
+
+                        <dt class="col-sm-3">Bio</dt>
+                        <dd class="col-sm-9">{{ current_user.profile_description or "No bio provided." }}</dd>
+                    </dl>
+
+                    <hr>
+
+                    {% if current_user.caregiver_profile %}
+                        <h5 class="text-primary">Caregiver Details</h5>
+                        <dl class="row">
+                            <dt class="col-sm-3">Hourly Rate</dt>
+                            <dd class="col-sm-9">${{ current_user.caregiver_profile.hourly_rate }}/hr</dd>
+
+                            <dt class="col-sm-3">Type</dt>
+                            <dd class="col-sm-9">{{ current_user.caregiver_profile.caregiving_type }}</dd>
+
+                            <dt class="col-sm-3">Gender</dt>
+                            <dd class="col-sm-9">{{ current_user.caregiver_profile.gender }}</dd>
+                        </dl>
+                    {% elif current_user.member_profile %}
+                        <h5 class="text-primary">Family Details</h5>
+                        <dl class="row">
+                            <dt class="col-sm-3">Address</dt>
+                            <dd class="col-sm-9">
+                                {{ current_user.member_profile.address.house_number }} {{ current_user.member_profile.address.street }}
+                            </dd>
+
+                            <dt class="col-sm-3">House Rules</dt>
+                            <dd class="col-sm-9">{{ current_user.member_profile.house_rules }}</dd>
+
+                            <dt class="col-sm-3">Dependent</dt>
+                            <dd class="col-sm-9">{{ current_user.member_profile.dependent_description }}</dd>
+                        </dl>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-secondary text-white">
+                    <h4 class="mb-0">Edit Profile</h4>
+                </div>
+                <div class="card-body">
+
+                    <form method="POST">
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label>Given Name</label>
+                                <input type="text" name="given_name" class="form-control" value="{{ current_user.given_name }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label>Surname</label>
+                                <input type="text" name="surname" class="form-control" value="{{ current_user.surname }}" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label>Phone</label>
+                                <input type="tel" name="phone_number" class="form-control" value="{{ current_user.phone_number }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label>City</label>
+                                <input type="text" name="city" class="form-control" value="{{ current_user.city }}" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Bio</label>
+                            <textarea name="profile_description" class="form-control" rows="2">{{ current_user.profile_description }}</textarea>
+                        </div>
+
+                        <hr>
+
+                        {% if current_user.caregiver_profile %}
+                            <h5 class="mb-3">Caregiver Settings</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label>Hourly Rate ($)</label>
+                                    <input type="text" name="hourly_rate" class="form-control" value="{{ current_user.caregiver_profile.hourly_rate }}">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label>Gender</label>
+                                    <select name="gender" class="form-select">
+                                        <option value="Female" {% if current_user.caregiver_profile.gender == 'Female' %}selected{% endif %}>Female</option>
+                                        <option value="Male" {% if current_user.caregiver_profile.gender == 'Male' %}selected{% endif %}>Male</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label>Caregiving Type</label>
+                                <select name="caregiving_type" class="form-select">
+                                    <option value="Babysitter" {% if current_user.caregiver_profile.caregiving_type == 'Babysitter' %}selected{% endif %}>Babysitter</option>
+                                    <option value="Caregiver for elderly" {% if current_user.caregiver_profile.caregiving_type == 'Caregiver for elderly' %}selected{% endif %}>Caregiver for elderly</option>
+                                    <option value="Playmate for children" {% if current_user.caregiver_profile.caregiving_type == 'Playmate for children' %}selected{% endif %}>Playmate for children</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label>Photo URL</label>
+                                <input type="text" name="photo" class="form-control" value="{{ current_user.caregiver_profile.photo or '' }}">
+                            </div>
+
+                        {% elif current_user.member_profile %}
+                            <h5 class="mb-3">Family Settings</h5>
+                            <div class="mb-3">
+                                <label>House Rules</label>
+                                <textarea name="house_rules" class="form-control">{{ current_user.member_profile.house_rules }}</textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label>Dependent Description</label>
+                                <textarea name="dependent_description" class="form-control">{{ current_user.member_profile.dependent_description }}</textarea>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label>House #</label>
+                                    <input type="text" name="house_number" class="form-control" value="{{ current_user.member_profile.address.house_number }}">
+                                </div>
+                                <div class="col-md-8 mb-3">
+                                    <label>Street</label>
+                                    <input type="text" name="street" class="form-control" value="{{ current_user.member_profile.address.street }}">
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                            <a href="{{ url_for('view_profile') }}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                    <hr class="my-5">
+
+                    <div class="alert alert-danger shadow-sm">
+                        <h5 class="alert-heading fw-bold">WARNING!</h5>
+                        <p class="small mb-3">
+                            If you delete your account, all your data (including jobs, appointments, and applications)
+                            will be permanently removed. This action cannot be undone.
+                        </p>
+
+                        <form action="{{ url_for('delete_account') }}" method="POST">
+                            <button type="submit" class="btn btn-danger w-100"
+                                    onclick="return confirm('WARNING: Are you sure you want to delete your account?\n\nThis will permanently erase:\n- Your Profile\n- All Job Posts\n- All Appointments\n\nThis cannot be undone.')">
+                                Delete My Account
+                            </button>
+                        </form>
+                    </div>
+
+                </div> </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

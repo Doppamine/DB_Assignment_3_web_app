@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4>Create an Account</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('register') }}" novalidate>
+                    
+                    <h5 class="mb-3">Login Details</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label>Given Name</label>
+                            <input type="text" name="given_name" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Surname</label>
+                            <input type="text" name="surname" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Email Address</label>
+                        <input type="email" name="email" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Phone Number</label>
+                        <input type="tel" name="phone_number" class="form-control" placeholder="+7701..." required>
+                        <small class="text-muted">Only numbers and '+' allowed.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>City</label>
+                        <input type="text" name="city" class="form-control" placeholder="e.g. Astana" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Password</label>
+                        <input type="password" name="password" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Short Bio</label>
+                        <textarea name="profile_description" class="form-control" rows="2"></textarea>
+                    </div>
+
+                    <hr>
+
+                    <h5 class="mb-3">I am a...</h5>
+                    <div class="mb-3">
+                        <select id="roleSelect" name="role" class="form-select" onchange="toggleFields()" required>
+                            <option value="member">Family Member (Seeking Care)</option>
+                            <option value="caregiver">Caregiver (Offering Care)</option>
+                        </select>
+                    </div>
+
+                    <div id="memberFields">
+                        <div class="mb-3">
+                            <label>House Rules</label>
+                            <textarea name="house_rules" class="form-control" placeholder="e.g. No smoking, No pets..."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label>Description of Dependent (Person needing care)</label>
+                            <textarea name="dependent_description" class="form-control" placeholder="e.g. 5-year old son..."></textarea>
+                        </div>
+                        <h6 class="mt-3">Address</h6>
+                        <div class="row">
+                            <div class="col-md-4"><input type="text" name="house_number" class="form-control" placeholder="House #"></div>
+                            <div class="col-md-8"><input type="text" name="street" class="form-control" placeholder="Street Name"></div>
+                        </div>
+                    </div>
+
+                    <div id="caregiverFields" style="display:none;">
+                        <div class="mb-3">
+                            <label>Hourly Rate ($)</label>
+                            <input type="number" step="0.01" name="hourly_rate" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label>Gender</label>
+                            <select name="gender" class="form-select">
+                                <option value="Female">Female</option>
+                                <option value="Male">Male</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Caregiving Type</label>
+                            <select name="caregiving_type" class="form-select">
+                                <option value="Babysitter">Babysitter</option>
+                                <option value="Caregiver for elderly">Caregiver for elderly</option>
+                                <option value="Playmate for children">Playmate for children</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Photo URL (Optional)</label>
+                            <input type="text" name="photo" class="form-control" placeholder="http://...">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 mt-4">Register</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function toggleFields() {
+        var role = document.getElementById("roleSelect").value;
+        var memberFields = document.getElementById("memberFields");
+        var caregiverFields = document.getElementById("caregiverFields");
+
+        if (role === "caregiver") {
+            caregiverFields.style.display = "block";
+            memberFields.style.display = "none";
+        } else {
+            caregiverFields.style.display = "none";
+            memberFields.style.display = "block";
+        }
+    }
+</script>
+{% endblock %}
